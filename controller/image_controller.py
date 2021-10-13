@@ -1,11 +1,12 @@
 from utils.image_download import simple_image_download as simp
 from utils.image_treatment import images_treatment as treatment
+import matplotlib
 from matplotlib import pyplot
 from matplotlib.image import imread
 import cv2
 import os
 
-folder = "simple_images/"
+folder = "images_dataset/"
 
 
 def donwload_images(query_element, amount_images):
@@ -24,6 +25,7 @@ def get_images():
 
 
 def show_images(query):
+    matplotlib.use('TkAgg')
     for i in range(9):
         # define subplot
         pyplot.subplot(330 + 1 + i)
@@ -41,8 +43,14 @@ def resize_images(query):
     tr = treatment.images_tratment
     tr.resize_images(food_folder)
 
+
 def convert_png_images(query):
     food_folder = folder + '/' + query
     tr = treatment.images_tratment
     tr.convert_png_images(food_folder)
 
+
+def list_images(query):
+    food_folder = folder + query
+    tr = treatment.images_tratment
+    tr.list_images(food_folder)

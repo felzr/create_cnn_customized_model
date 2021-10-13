@@ -6,11 +6,12 @@ import magic
 import progressbar
 from urllib.parse import quote
 
+
 class simple_image_download:
     def __init__(self):
         pass
 
-    def urls(self, keywords, limit, extensions={'.jpg', '.png', '.ico', '.gif', '.jpeg'}):
+    def urls(self, keywords, limit, extensions={'.png', '.ico', '.gif', '.jpeg'}):
         keyword_to_search = [str(item).strip() for item in keywords.split(',')]
         i = 0
         links = []
@@ -48,10 +49,9 @@ class simple_image_download:
                     except Exception as e:
                         break
 
-
                 try:
                     r = requests.get(object_raw, allow_redirects=True, timeout=1)
-                    if('html' not in str(r.content)):
+                    if ('html' not in str(r.content)):
                         mime = magic.Magic(mime=True)
                         file_type = mime.from_buffer(r.content)
                         file_extension = f'.{file_type.split("/")[1]}'
@@ -69,12 +69,11 @@ class simple_image_download:
             i += 1
 
         bar.finish()
-        return(links)
-
+        return (links)
 
     def download(self, keywords, limit, extensions={'.jpg', '.png', '.ico', '.gif', '.jpeg'}):
         keyword_to_search = [str(item).strip() for item in keywords.split(',')]
-        main_directory = "simple_images/"
+        main_directory = "images_dataset/"
         i = 0
 
         things = len(keyword_to_search) * limit
@@ -87,7 +86,8 @@ class simple_image_download:
         while i < len(keyword_to_search):
             self._create_directories(main_directory, keyword_to_search[i])
             url = 'https://www.google.com/search?q=' + quote(
-                keyword_to_search[i].encode('utf-8')) + '&tbm=isch&safe=active&tbs=il:cl&hl=pt-BR&sa=X&ved=0CAAQ1vwEahcKEwj4t6HMhJXuAhUAAAAAHQAAAAAQAg&biw=1903&bih=969'
+                keyword_to_search[i].encode(
+                    'utf-8')) + '&tbm=isch&safe=active&tbs=il:cl&hl=pt-BR&sa=X&ved=0CAAQ1vwEahcKEwj4t6HMhJXuAhUAAAAAHQAAAAAQAg&biw=1903&bih=969'
             raw_html = self._download_page(url)
 
             end_object = -1;
@@ -101,9 +101,9 @@ class simple_image_download:
 
                         buffor = raw_html.find('\\', new_line + 1, end_object)
                         if buffor != -1:
-                            object_raw = (raw_html[new_line+1:buffor])
+                            object_raw = (raw_html[new_line + 1:buffor])
                         else:
-                            object_raw = (raw_html[new_line+1:end_object])
+                            object_raw = (raw_html[new_line + 1:end_object])
 
                         if any(extension in object_raw for extension in extensions):
                             break
@@ -114,7 +114,7 @@ class simple_image_download:
 
                 try:
                     r = requests.get(object_raw, allow_redirects=True, timeout=1)
-                    if('html' not in str(r.content)):
+                    if ('html' not in str(r.content)):
                         mime = magic.Magic(mime=True)
                         file_type = mime.from_buffer(r.content)
                         file_extension = f'.{file_type.split("/")[1]}'
@@ -123,7 +123,7 @@ class simple_image_download:
                         if file_extension == '.png' and not google_image_seen:
                             google_image_seen = True
                             raise ValueError()
-                        file_name = str(keyword_to_search[i]) + "_" + str(j + 1) + file_extension
+                        file_name = str(keyword_to_search[i]) + "_" + str(j + 1) + '.jpeg'
                         with open(os.path.join(path, file_name), 'wb') as file:
                             file.write(r.content)
                         bar.update(bar.currval + 1)
@@ -135,7 +135,6 @@ class simple_image_download:
 
             i += 1
         bar.finish()
-
 
     def _create_directories(self, main_directory, name):
         name = name.replace(" ", "_")
@@ -159,11 +158,12 @@ class simple_image_download:
             pass
         return
 
-    def _download_page(self,url):
+    def _download_page(self, url):
 
         try:
             headers = {}
-            headers['User-Agent'] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+            headers[
+                'User-Agent'] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
             req = urllib.request.Request(url, headers=headers)
             resp = urllib.request.urlopen(req)
             respData = str(resp.read())
